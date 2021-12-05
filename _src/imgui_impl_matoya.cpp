@@ -60,9 +60,7 @@ void ImGui_ImplMatoya_NewFrame(MTY_App* mty_app)
     uint32_t win_w, win_h;
 	//MTY_Window
     MTY_WindowGetSize(mty_app, 0, &win_w, &win_h);
-	float display_scale = MTY_WindowGetScreenScale(mty_app, 0);
-    //io.DisplayFramebufferScale = ImVec2(win_w/(float)io.DisplaySize.x, win_h/(float)io.DisplaySize.y);
-	//io.DisplayFramebufferScale = ImVec2(1,1);
+	io.DisplaySize = ImVec2(win_w, win_h);
 
     MTY_Time curr_time = MTY_GetTime();
     io.DeltaTime = ((double)curr_time - (double)last_time);
@@ -74,7 +72,6 @@ void ImGui_ImplMatoya_NewFrame(MTY_App* mty_app)
 }
 
 //============================================================================================
-
 
 void ImGui_ImplMatoya_Init(MTY_App* mty_app, MTY_Renderer* mty_renderer)
 {
