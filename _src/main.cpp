@@ -8,15 +8,24 @@ struct context {
 	bool quit = false;
 };
 
+#include "imgui.h"
+#include "imgui_impl_matoya.h"
+#include "backends/imgui_impl_opengl3.h"
+
 static void event_func(const MTY_Event *evt, void *opaque)
 {
+	// Redirect for ImGui
 	context *ctx = (context*)opaque;
+	
+	ImGui_ImplMatoya_EventFunc(evt, ctx->app);
 
 	MTY_PrintEvent(evt);
 
 	if (evt->type == MTY_EVENT_CLOSE)
 		ctx->quit = true;
 }
+
+static MTY_Renderer* base_renderer = NULL;
 
 static bool app_func(void *opaque)
 {
@@ -33,10 +42,23 @@ static bool app_func(void *opaque)
 		desc.cropHeight = ctx->image_h;
 		desc.aspectRatio = (float) ctx->image_w / (float) ctx->image_h;
 	}
+	ImGuiIO& io = ImGui::GetIO();
+	uint32_t x,y;
+	MTY_WindowGetScreenSize(ctx->app, 0, &x, &y);
+	io.DisplaySize.x = x;
+	io.DisplaySize.y = y;
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplMatoya_NewFrame(ctx->app);
+	ImGui::NewFrame();
+	
 
+	ImGui::ShowDemoWindow();
+	ImGui::Render();
 	// Draw the quad
 	MTY_WindowDrawQuad(ctx->app, 0, ctx->image, &desc);
-
+	
+	//ImGui_ImplMatoya_Render(ctx->app, base_renderer);
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	MTY_WindowPresent(ctx->app, 0, 1);
 
 	return !ctx->quit;
@@ -44,6 +66,10 @@ static bool app_func(void *opaque)
 
 int main(int argc, char **argv)
 {
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+
 	struct context ctx = {0};
 	ctx.app = MTY_AppCreate(app_func, event_func, &ctx);
 	if (!ctx.app)
@@ -52,12 +78,13 @@ int main(int argc, char **argv)
 	MTY_WindowDesc desc;
     {
 		desc.title = "My Window";
-		desc.api = MTY_GFX_GL;
+		desc.api = MTY_GFX_GL; // Force openGL for simplicity
 		desc.width = 800;
 		desc.height = 600;
 		desc.fullscreen = false;
 		desc.hidden = false;
 	}
+	base_renderer = MTY_RendererCreate();
 
 	MTY_WindowCreate(ctx.app, &desc);
 	MTY_WindowMakeCurrent(ctx.app, 0, true);
@@ -77,7 +104,18 @@ int main(int argc, char **argv)
 		MTY_Free(png);
 	}
 
+	// Initialize DearImGui with LibMatoya on Windows
+
+	
+	//ImGui::StyleColorsDark();
+	ImGui_ImplOpenGL3_Init("#version 330");
+	ImGui_ImplMatoya_Init(ctx.app, base_renderer);
+
 	MTY_AppRun(ctx.app);
+
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplMatoya_Shutdown();
+
 	MTY_AppDestroy(&ctx.app);
 
 	MTY_Free(ctx.image);

@@ -23,7 +23,7 @@ set(OpenR_EXT ${CMAKE_CURRENT_SOURCE_DIR}/_submodules)
 # Engine Source Files
 set(OpenR_SRC
     ${OpenR_INC}/main.cpp
-
+    ${OpenR_INC}/imgui_impl_matoya.cpp
 )
 
 add_executable(${OpenR_TARGET} "${OpenR_SRC}")
@@ -56,6 +56,7 @@ target_include_directories(${OpenR_TARGET} PUBLIC
 # EXTERNAL LIBRARIES
 #------------------------------------------------------------------------------------------------
 
+# LIBMATOYA
 add_custom_target( libmatoya_build 
     COMMAND cd ./_submodules/libmatoya
     COMMAND nmake
@@ -67,6 +68,24 @@ target_include_directories(${OpenR_TARGET} PUBLIC
 target_link_libraries(${OpenR_TARGET} PUBLIC
     ${OpenR_EXT}/libmatoya/bin/windows/x86_x64/matoya.lib
     bcrypt.lib d3d11.lib d3d9.lib hid.lib uuid.lib dxguid.lib opengl32.lib ws2_32.lib user32.lib gdi32.lib xinput9_1_0.lib ole32.lib shell32.lib windowscodecs.lib shlwapi.lib imm32.lib winmm.lib winhttp.lib secur32.lib crypt32.lib
+)
+
+# DearImGUI
+target_include_directories(${OpenR_TARGET} PUBLIC
+    ${OpenR_EXT}/dear_imgui
+)
+
+target_sources(${OpenR_TARGET} PUBLIC
+    ${OpenR_EXT}/dear_imgui/imgui.cpp
+    ${OpenR_EXT}/dear_imgui/imgui_demo.cpp
+    ${OpenR_EXT}/dear_imgui/imgui_draw.cpp
+    ${OpenR_EXT}/dear_imgui/imgui_tables.cpp
+    ${OpenR_EXT}/dear_imgui/imgui_widgets.cpp
+    ${OpenR_EXT}/dear_imgui/backends/imgui_impl_opengl3.cpp
+    ${OpenR_EXT}/dear_imgui/backends/imgui_impl_dx11.cpp
+    ${OpenR_EXT}/dear_imgui/backends/imgui_impl_win32.cpp
+#   ${OpenR_EXT}/dear_imgui/backends/imgui_impl_glfw.cpp
+#   ${OpenR_EXT}/dear_imgui/backends/imgui_impl_glut.cpp
 )
 
 #------------------------------------------------------------------------------------------------
