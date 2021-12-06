@@ -737,14 +737,14 @@ static void ImGui_ImplGlfw_ShowWindow(ImGuiViewport* viewport)
 
 #if defined(_WIN32)
     // GLFW hack: Hide icon from task bar
-    HWND hwnd = (HWND)viewport->PlatformHandleRaw;
-    if (viewport->Flags & ImGuiViewportFlags_NoTaskBarIcon)
-    {
-        LONG ex_style = ::GetWindowLong(hwnd, GWL_EXSTYLE);
-        ex_style &= ~WS_EX_APPWINDOW;
-        ex_style |= WS_EX_TOOLWINDOW;
-        ::SetWindowLong(hwnd, GWL_EXSTYLE, ex_style);
-    }
+    //HWND hwnd = (HWND)viewport->PlatformHandleRaw;
+    //if (viewport->Flags & ImGuiViewportFlags_NoTaskBarIcon)
+    //{
+    //    LONG ex_style = ::GetWindowLong(hwnd, GWL_EXSTYLE);
+    //    ex_style &= ~WS_EX_APPWINDOW;
+    //    ex_style |= WS_EX_TOOLWINDOW;
+    //    ::SetWindowLong(hwnd, GWL_EXSTYLE, ex_style);
+    //}
 
     // GLFW hack: install hook for WM_NCHITTEST message handler
 #if !GLFW_HAS_MOUSE_PASSTHROUGH && GLFW_HAS_WINDOW_HOVERED && defined(_WIN32)
@@ -871,6 +871,7 @@ static void ImGui_ImplGlfw_SwapBuffers(ImGuiViewport* viewport, void*)
 //--------------------------------------------------------------------------------------------------------
 
 // We provide a Win32 implementation because this is such a common issue for IME users
+#define IMGUI_DISABLE_WIN32_FUNCTIONS
 #if defined(_WIN32) && !defined(IMGUI_DISABLE_WIN32_FUNCTIONS) && !defined(IMGUI_DISABLE_WIN32_DEFAULT_IME_FUNCTIONS)
 #define HAS_WIN32_IME   1
 #include <imm.h>
