@@ -1,124 +1,83 @@
-#include "matoya.h"
-
-struct context {
-	MTY_App *app;
-	void *image;
-	uint32_t image_w;
-	uint32_t image_h;
-	bool quit = false;
-};
-
+#include "raylib.h"
 #include "imgui.h"
-#include "imgui_impl_matoya.h"
+#include "imgui_internal.h"
+#include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 
-static void event_func(const MTY_Event *evt, void *opaque)
-{
-	// Redirect for ImGui
-	context *ctx = (context*)opaque;
-	
-	ImGui_ImplMatoya_EventFunc(evt, ctx->app);
-
-	MTY_PrintEvent(evt);
-
-	if (evt->type == MTY_EVENT_CLOSE)
-		ctx->quit = true;
-}
-
-static MTY_Renderer* base_renderer = NULL;
-
-static bool app_func(void *opaque)
-{
-	context *ctx = (context*)opaque;
-
-	// Set up a render description for the PNG
-	MTY_RenderDesc desc;
-    {
-		desc.format = MTY_COLOR_FORMAT_BGRA;
-		desc.effect = MTY_EFFECT_SCANLINES;
-		desc.imageWidth = ctx->image_w;
-		desc.imageHeight = ctx->image_h;
-		desc.cropWidth = ctx->image_w;
-		desc.cropHeight = ctx->image_h;
-		desc.aspectRatio = (float) ctx->image_w / (float) ctx->image_h;
-	}
-	ImGuiIO& io = ImGui::GetIO();
-	uint32_t x,y;
-	MTY_WindowGetScreenSize(ctx->app, 0, &x, &y);
-	io.DisplaySize.x = x;
-	io.DisplaySize.y = y;
-	ImGui_ImplOpenGL3_NewFrame();
-	ImGui_ImplMatoya_NewFrame(ctx->app);
-	ImGui::NewFrame();
-	
-
-	ImGui::ShowDemoWindow();
-	ImGui::Render();
-	// Draw the quad
-	MTY_WindowDrawQuad(ctx->app, 0, ctx->image, &desc);
-	
-	//ImGui_ImplMatoya_Render(ctx->app, base_renderer);
-	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-	MTY_WindowPresent(ctx->app, 0, 1);
-
-	return !ctx->quit;
-}
-
+#define MAX_TOUCH_POINTS 10
+#define _GLFW_HANDLE
 int main(int argc, char **argv)
 {
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
-
-	struct context ctx = {0};
-	ctx.app = MTY_AppCreate(app_func, event_func, &ctx);
-	if (!ctx.app)
-		return 1;
-
-	MTY_WindowDesc desc;
-    {
-		desc.title = "My Window";
-		desc.api = MTY_GFX_GL; // Force openGL for simplicity
-		desc.width = 800;
-		desc.height = 600;
-		desc.fullscreen = false;
-		desc.hidden = false;
-	}
-	base_renderer = MTY_RendererCreate();
-
-	MTY_WindowCreate(ctx.app, &desc);
-	MTY_WindowMakeCurrent(ctx.app, 0, true);
-
-	// Fetch a PNG from the internet
-	void *png = NULL;
-	size_t png_size = 0;
-	uint16_t code = 0;
-	if (MTY_HttpRequest("user-images.githubusercontent.com", 0, true, "GET",
-		"/328897/112402607-36d00780-8ce3-11eb-9707-d11bc6c73c59.png",
-		NULL, NULL, 0, 5000, &png, &png_size, &code))
-	{
-		// On success, decompress it into RGBA
-		if (code == 200)
-			ctx.image = MTY_DecompressImage(png, png_size, &ctx.image_w, &ctx.image_h);
-
-		MTY_Free(png);
-	}
-
-	// Initialize DearImGui with LibMatoya on Windows
-
 	
-	//ImGui::StyleColorsDark();
-	ImGui_ImplOpenGL3_Init("#version 330");
-	ImGui_ImplMatoya_Init(ctx.app, base_renderer);
+    // Initialization
+    //--------------------------------------------------------------------------------------
+    const int screenWidth = 800;
+    const int screenHeight = 450;
 
-	MTY_AppRun(ctx.app);
+    InitWindow(screenWidth, screenHeight, "raylib [core] example - input multitouch");
+	SetWindowState(FLAG_WINDOW_RESIZABLE);
+    Vector2 touchPositions[MAX_TOUCH_POINTS] = { 0 };
 
+    SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
+    //---------------------------------------------------------------------------------------
+
+	// Setup Dear ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+
+	//ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*)GetWindowHandle(), true);
+	ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*)GetWindowHandle(), true);
+    ImGui_ImplOpenGL3_Init("#version 330");
+    
+    // Main game loop
+    while (!WindowShouldClose())    // Detect window close button or ESC key
+    {
+		ImGui_ImplGlfw_NewFrame();
+		ImGui_ImplOpenGL3_NewFrame();
+        
+        ImGui::NewFrame();
+		ImGui::ShowDemoWindow();
+		
+        // Update
+        //----------------------------------------------------------------------------------
+        // Get multiple touchpoints
+        for (int i = 0; i < MAX_TOUCH_POINTS; ++i) touchPositions[i] = GetTouchPosition(i);
+        //----------------------------------------------------------------------------------
+
+        // Draw
+        //----------------------------------------------------------------------------------
+        BeginDrawing();
+
+            ClearBackground(RAYWHITE);
+            
+            for (int i = 0; i < MAX_TOUCH_POINTS; ++i)
+            {
+                // Make sure point is not (0, 0) as this means there is no touch for it
+                if ((touchPositions[i].x > 0) && (touchPositions[i].y > 0))
+                {
+                    // Draw circle and touch index number
+                    DrawCircleV(touchPositions[i], 34, ORANGE);
+                    DrawText(TextFormat("%d", i), (int)touchPositions[i].x - 10, (int)touchPositions[i].y - 70, 40, BLACK);
+                }
+            }
+
+            DrawText("touch the screen at multiple locations to get multiple balls", 10, 10, 20, DARKGRAY);
+            
+            ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        EndDrawing();
+        //----------------------------------------------------------------------------------
+		
+	}
+
+	ImGui_ImplGlfw_Shutdown();
 	ImGui_ImplOpenGL3_Shutdown();
-	ImGui_ImplMatoya_Shutdown();
 
-	MTY_AppDestroy(&ctx.app);
+    // De-Initialization
+    //--------------------------------------------------------------------------------------
+    CloseWindow();        // Close window and OpenGL context
+    //--------------------------------------------------------------------------------------
 
-	MTY_Free(ctx.image);
-
-	return 0;
+    return 0;
 }
