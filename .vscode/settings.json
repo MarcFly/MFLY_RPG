@@ -1,0 +1,13 @@
+{
+    "files.associations": {
+        "*.md.html": "markdown",
+        "CMakeLists.txt": "cmake",
+        "*.sq_vert": "glsl",
+        "*.sq_frag": "glsl",
+        "deque": "cpp",
+        "format": "cpp",
+        "list": "cpp",
+        "vector": "cpp",
+        "xstring": "cpp"
+    }
+}

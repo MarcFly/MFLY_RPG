@@ -17,15 +17,14 @@ set(OpenR_TARGET "MarcFly_OpenRole")
 
 # Base Include Directiories
 set(OpenR_INC ${CMAKE_CURRENT_SOURCE_DIR}/_src)
-set(OpenR_LIBS ${CMAKE_CURRENT_SOURCE_DIR}/_deps)
+set(OpenR_LIBS ${CMAKE_CURRENT_SOURCE_DIR}/_libs)
 set(OpenR_EXT ${CMAKE_CURRENT_SOURCE_DIR}/_submodules)
 
 # Engine Source Files
-set(OpenR_SRC
-    ${OpenR_INC}/main.cpp
-)
+file(GLOB_RECURSE OpenR_SRC  ${CMAKE_CURRENT_SOURCE_DIR}/_src/*.cpp)
+file(GLOB_RECURSE OpenR_H  ${CMAKE_CURRENT_SOURCE_DIR}/_src/*.h)
 
-add_executable(${OpenR_TARGET} "${OpenR_SRC}")
+add_executable(${OpenR_TARGET} "${OpenR_SRC}" "${OpenR_H}")
 
 #------------------------------------------------------------------------------------------------
 # BUILD
@@ -83,6 +82,19 @@ target_include_directories(${OpenR_TARGET} PUBLIC
 target_link_libraries(${OpenR_TARGET} PUBLIC
     raylib
 )
+
+# MFLY_Tasker and SqueTimer
+target_include_directories(${OpenR_TARGET} PUBLIC
+    ${OpenR_LIBS}/mfly_tasker/mfly_tasker.cpp
+    ${OpenR_LIBS}/mfly_tasker/pcg/pcg_basic.c
+    ${OpenR_LIBS}/sque_timer/sque_timer.h
+)
+
+target_sources(${OpenR_TARGET} PUBLIC
+    ${OpenR_LIBS}/sque_timer
+    ${OpenR_LIBS}/mfly_tasker
+)
+
 #------------------------------------------------------------------------------------------------
 # GROUP SOURCING FOR IDEs
 #------------------------------------------------------------------------------------------------
