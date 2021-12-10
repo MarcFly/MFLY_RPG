@@ -25,12 +25,19 @@
 ## Unit Format
  * Unit Title
  * HP
- * Allow any text like, description, attacks,...
+ * Action Text Fields
+   * Spells
+   * Attacks
+   * Actions
+   * Legendary Actions
+   * Resistances
+   * Invulnerabilities
+   * Vulnerabilities
  * Size (official DnD sizes)
  * Hold a Link to the webpage where it is defined so it is easy to obtain
  * Reference Image
  * Scale + TopLeft to setup the circle to be rendered as a "figure"
- * Notes
+ * Note Text Fields
     * Specific Name
     * Physical Description
     * Loot
