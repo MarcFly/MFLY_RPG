@@ -5,7 +5,7 @@ using namespace mfly;
 
 //#include <functional>
 
-#include "sque_timer/sque_timer.h"
+#include "sque_timer.h"
 std::atomic<double> dep_check_time;
 
 double mfly::Tasker::GetDepCheckTime()

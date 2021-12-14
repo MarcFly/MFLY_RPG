@@ -3,8 +3,8 @@
 #include "imgui_internal.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
-#include "raylib.h"
 
+#include <string>
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ITEMS ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -133,19 +133,18 @@ void UI_DefaultStyle()
 
 void UI_SetFonts()
 {
-    //ImGuiIO& io = ImGui::GetIO();
-    //io.Fonts->AddFontDefault();
-//
-    //static const ImWchar icons_ranges[] = { ICON_MIN_FK, ICON_MAX_FK, 0 };
-    //ImFontConfig icons_config;
-    //icons_config.MergeMode = true;
-    //icons_config.PixelSnapH = true;
-//
-    //std::string ExecPath = FS_GetExecPath();
-    //io.FontDefault = io.Fonts->AddFontFromFileTTF((ExecPath + "/Assets/fonts/Cousine-Regular.ttf").c_str(), 20);
-    //io.Fonts->AddFontFromFileTTF((ExecPath + "/Assets/fonts/forkawesome-webfont.ttf").c_str(), 20, &icons_config, icons_ranges);
-    //
-    //io.Fonts->Build();
+    ImGuiIO& io = ImGui::GetIO();
+    io.Fonts->AddFontDefault();
+
+    static const ImWchar icons_ranges[] = { ICON_MIN_MD, ICON_MAX_MD, 0 };
+    ImFontConfig icons_config;
+    icons_config.MergeMode = false;
+    icons_config.PixelSnapH = true;
+
+    io.FontDefault = io.Fonts->AddFontFromFileTTF((std::string(GetWorkingDirectory()) + "/Cousine-Regular.ttf").c_str(), 20);
+    io.Fonts->AddFontFromFileTTF((std::string(GetWorkingDirectory()) + "/MaterialIcons-Regular.ttf").c_str(), 40, &icons_config, icons_ranges);
+    //io.Fonts->Fonts[io.Fonts->Fonts.size()-1]->Scale /= 3.f;
+    io.Fonts->Build();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -172,6 +171,7 @@ void UI_Init()
 
     UI_DefaultStyle();
     UI_DefaultTheme();
+    UI_SetFonts();
 
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
     io.ConfigInputTextCursorBlink = false;

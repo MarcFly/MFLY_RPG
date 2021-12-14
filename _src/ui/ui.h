@@ -1,7 +1,10 @@
 #ifndef _UI_H_
 #define _UI_H_
 
+#include "raylib.h"
+
 #include "imgui.h"
+#include "IconsMaterialDesign.h"
 #include <cstdint>
 
 class Executer

@@ -14,6 +14,9 @@ project("MarcFly's OpenRole"    VERSION 2021.1
 set(OpenR_TARGET "MarcFly_OpenRole")
 
 # C / CXX Config
+set(CMAKE_CXX_STANDARD 17)
+set(CMACE_C_STANDARD 11)
+#set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Base Include Directiories
 set(OpenR_INC ${CMAKE_CURRENT_SOURCE_DIR}/_src)
@@ -23,6 +26,8 @@ set(OpenR_EXT ${CMAKE_CURRENT_SOURCE_DIR}/_submodules)
 # Engine Source Files
 file(GLOB_RECURSE OpenR_SRC  ${CMAKE_CURRENT_SOURCE_DIR}/_src/*.cpp)
 file(GLOB_RECURSE OpenR_H  ${CMAKE_CURRENT_SOURCE_DIR}/_src/*.h)
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/Run)
 
 add_executable(${OpenR_TARGET} "${OpenR_SRC}" "${OpenR_H}")
 
@@ -84,16 +89,21 @@ target_link_libraries(${OpenR_TARGET} PUBLIC
 )
 
 # MFLY_Tasker and SqueTimer
-target_include_directories(${OpenR_TARGET} PUBLIC
+target_sources(${OpenR_TARGET} PUBLIC
     ${OpenR_LIBS}/mfly_tasker/mfly_tasker.cpp
     ${OpenR_LIBS}/mfly_tasker/pcg/pcg_basic.c
-    ${OpenR_LIBS}/sque_timer/sque_timer.h
+    ${OpenR_LIBS}/sque_utils/sque_timer.h
+    ${OpenR_LIBS}/sque_utils/sque_filesystem.h
+
 )
 
-target_sources(${OpenR_TARGET} PUBLIC
-    ${OpenR_LIBS}/sque_timer
+target_include_directories(${OpenR_TARGET} PUBLIC
+    ${OpenR_LIBS}/sque_utils
     ${OpenR_LIBS}/mfly_tasker
 )
+
+
+message("Directory: ${CMAKE_CURRENT_BINARY_DIR}")
 
 #------------------------------------------------------------------------------------------------
 # GROUP SOURCING FOR IDEs

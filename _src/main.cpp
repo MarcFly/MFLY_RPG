@@ -1,5 +1,10 @@
+
 #include "raylib.h"
 #include "ui/ui.h"
+
+
+
+#include "asset_management/asset_manager.h"
 
 #define MAX_TOUCH_POINTS 10
 #define _GLFW_HANDLE

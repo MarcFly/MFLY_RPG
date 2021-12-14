@@ -8,6 +8,9 @@
         "format": "cpp",
         "list": "cpp",
         "vector": "cpp",
-        "xstring": "cpp"
-    }
+        "xstring": "cpp",
+        "chrono": "cpp",
+        "filesystem": "cpp"
+    },
+    "C_Cpp.dimInactiveRegions": false
 }

@@ -1,6 +1,6 @@
-#include <mfly_tasker.h>
-#include <../sque_timer/sque_timer.h>
-#include <Windows.h>
+#include "mfly_tasker.h>
+#include "sque_timer.h"
+//#include <Windows.h>
 
 /*
     Principles for a task to be worth multithreading
