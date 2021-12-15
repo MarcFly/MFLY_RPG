@@ -138,11 +138,11 @@ void UI_SetFonts()
 
     static const ImWchar icons_ranges[] = { ICON_MIN_MD, ICON_MAX_MD, 0 };
     ImFontConfig icons_config;
-    icons_config.MergeMode = false;
+    icons_config.MergeMode = true;
     icons_config.PixelSnapH = true;
 
     io.FontDefault = io.Fonts->AddFontFromFileTTF((std::string(GetWorkingDirectory()) + "/Cousine-Regular.ttf").c_str(), 20);
-    io.Fonts->AddFontFromFileTTF((std::string(GetWorkingDirectory()) + "/MaterialIcons-Regular.ttf").c_str(), 40, &icons_config, icons_ranges);
+    io.Fonts->AddFontFromFileTTF((std::string(GetWorkingDirectory()) + "/MaterialIcons-Regular.ttf").c_str(), 20, &icons_config, icons_ranges);
     //io.Fonts->Fonts[io.Fonts->Fonts.size()-1]->Scale /= 3.f;
     io.Fonts->Build();
 }
@@ -158,6 +158,8 @@ std::vector<UI_ID> active_items;
 static MenuBar menu_bar;
 
 static ImGuiDockNodeFlags base_dockflags = ImGuiDockNodeFlags_NoWindowMenuButton;
+#include "asset_management/assets_ui.h"
+static SQUE_AssetWindow aui;
 
 void UI_Init()
 {
@@ -180,6 +182,10 @@ void UI_Init()
 
     // MenuBar Default starts
     menu_bar.Init();
+    aui.Init();
+    menu_bar.RegisterMenuItem(&aui.active, "Asset Manager", menu_bar.RegisterMenu(NULL, "Windows"));
+
+
 }
 
 void UI_RegisterItem(UI_Item* item)

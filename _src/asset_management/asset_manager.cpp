@@ -328,7 +328,16 @@ void AssetManager_Update()
 {
 	// Dealing with events for loading and such...
 	// How to react with that type of things...
-	
+	if(IsFileDropped())
+	{
+		int num_files;
+		char** files = GetDroppedFiles(&num_files);
+		for(uint32_t i = 0;  i < num_files; ++i)
+			AssetManager_HandleDropFile(files[i]);
+				
+		ClearDroppedFiles();	
+	}
+
 	if (test_timer.ReadMilliSec() > 10000 && directories.size() > 0)
 	{
 		AssetManager_RefreshDirRecursive(directories[0].id);

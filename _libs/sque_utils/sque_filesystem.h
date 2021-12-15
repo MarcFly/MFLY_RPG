@@ -312,6 +312,8 @@ static uint32_t AddToParent(const uint32_t id, const char* location, std::vector
 
 static void SQUE_FS_GenDirectoryStructure(const char* location, std::vector<SQUE_Dir>* dirs)
 {
+	if(!std::filesystem::exists(location))
+		return;
 	dirs->push_back(SQUE_FS_GenDir(location));
 	std::vector<SQUE_Dir>& dirs_v = *dirs;
 	for (auto& file : std::filesystem::recursive_directory_iterator(location))

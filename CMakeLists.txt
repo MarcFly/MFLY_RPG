@@ -27,10 +27,11 @@ set(OpenR_EXT ${CMAKE_CURRENT_SOURCE_DIR}/_submodules)
 file(GLOB_RECURSE OpenR_SRC  ${CMAKE_CURRENT_SOURCE_DIR}/_src/*.cpp)
 file(GLOB_RECURSE OpenR_H  ${CMAKE_CURRENT_SOURCE_DIR}/_src/*.h)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/Run)
+#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/Run)
 
 add_executable(${OpenR_TARGET} "${OpenR_SRC}" "${OpenR_H}")
-
+message("${OpenR_SRC}")
+message("${OpenR_H}")
 #------------------------------------------------------------------------------------------------
 # BUILD
 #------------------------------------------------------------------------------------------------
